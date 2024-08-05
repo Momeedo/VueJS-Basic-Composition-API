@@ -1,6 +1,16 @@
 <script>
 import { ref, reactive, toRefs, toRef, computed, watch, watchEffect } from 'vue'
+import CartProduct from './components/CartProduct.vue';
 export default {
+  props: {
+    cartProduct: {
+      type: Object,
+      required: true
+    }
+  },
+  components: {
+    CartProduct
+  },
   setup() {
 
     //Ref
@@ -12,7 +22,8 @@ export default {
     //Reactive
     const product = reactive({
       name: "Car",
-      price: "44000"
+      price: "44000",
+      quentity: 1
     })
     const changeProduct = () => {
       product.name = "Boat"
@@ -55,6 +66,19 @@ export default {
       console.log('Name changed detected by watchEffect: ', product.name)
     )
 
+    //props
+    const products = ref([
+      {
+        id: 1,
+        name: "Prop Product",
+        price: 10,
+        quantity: 3
+      }
+    ])
+
+    //emits
+    const handleRemove = (data) => products.value.splice(0, 1)
+
     return {
       message,
       counter,
@@ -63,7 +87,9 @@ export default {
       product,
       changeProduct,
       name, price,
-      total
+      total,
+      products,
+      handleRemove
     }
   }
 }
@@ -82,6 +108,11 @@ export default {
   <a href="#" @click="changeProduct">Rename Product</a>
   <br /><br />
   <h1>Total : {{ total }}</h1>
+  <br /><br />
+  <hr />
+  <br /><br />
+  <CartProduct v-for="product in products" :cart-product="product" :key="product.id" @remove="handleRemove"></CartProduct>
+
 </template>
 
 
