@@ -1,6 +1,6 @@
 # Basic-VueJS-CompositionAPI
 
-This template should help get you started developing with Vue 3 in Vite.
+Thisis a Basic VueJS App with the most basic Composition API features.
 
 ## Recommended IDE Setup
 

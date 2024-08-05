@@ -1,21 +1,90 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<script>
+import { ref, reactive, toRefs, toRef, computed, watch, watchEffect } from 'vue'
+export default {
+  setup() {
+
+    //Ref
+    const message = ref("Counter")
+    const counter = ref(0)
+    const incrementCounter = () => counter.value++
+    const decrementCounter = () => counter.value--
+
+    //Reactive
+    const product = reactive({
+      name: "Car",
+      price: "44000"
+    })
+    const changeProduct = () => {
+      product.name = "Boat"
+    }
+
+    //toRef
+    const nameRef = toRef(product, 'name')
+    console.log('nameref before change: ' + nameRef.value)
+    product.name = "Plane"
+    console.log('nameref after change: ' + nameRef.value)
+
+    //toRefs
+    const productRefs = toRefs(product)
+    console.log('Name before change: ' + productRefs.name.value)
+    console.log('Price before change: ' + productRefs.price.value)
+    product.name = "Cruiser"
+    product.price = 2000000
+    console.log('Name after change: ' + productRefs.name.value)
+    console.log('Price after change: ' + productRefs.price.value)
+
+    const { name, price } = toRefs(product)
+
+    //computed
+    const total = computed(() => product.price * counter.value)
+
+    //watch
+    watch(total, (newVal, oldVal) => {
+      console.log("Watched old value is ", oldVal)
+      console.log("Watched new value is ", newVal)
+    }, { immediate: true })
+
+    //watch reactive object
+    watch(() => product.name, (newVal, oldVal) => {
+      console.log("Watched old value is ", oldVal)
+      console.log("Watched new value is ", newVal)
+    })
+
+    //watchEffect
+    watchEffect(() =>
+      console.log('Name changed detected by watchEffect: ', product.name)
+    )
+
+    return {
+      message,
+      counter,
+      incrementCounter,
+      decrementCounter,
+      product,
+      changeProduct,
+      name, price,
+      total
+    }
+  }
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  <h1>{{ message }} ({{ counter }}) <a href="#" @click="decrementCounter">-</a><a href="#"
+      @click="incrementCounter">+</a></h1>
+  <br />
+  <input v-model="message" type="text" />
+  <br /><br />
+  <h1>{{ product.name }} : {{ product.price }}</h1>
+  <br />
+  <h1>{{ name }} : {{ price }}</h1>
+  <br />
+  <a href="#" @click="changeProduct">Rename Product</a>
+  <br /><br />
+  <h1>Total : {{ total }}</h1>
 </template>
+
+
 
 <style scoped>
 header {
