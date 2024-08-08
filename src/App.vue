@@ -1,6 +1,7 @@
 <script>
 import { ref, reactive, toRefs, toRef, computed, watch, watchEffect } from 'vue'
 import CartProduct from './components/CartProduct.vue';
+import useCart from './useCart.js';
 export default {
   props: {
     cartProduct: {
@@ -12,6 +13,17 @@ export default {
     CartProduct
   },
   setup() {
+
+    const { products, addProduct, removeProduct } = useCart()
+
+    addProduct(
+      {
+        id: 1,
+        name: "Prop Product",
+        price: 10,
+        quantity: 3
+      }
+    )
 
     //Ref
     const message = ref("Counter")
@@ -67,17 +79,17 @@ export default {
     )
 
     //props
-    const products = ref([
-      {
-        id: 1,
-        name: "Prop Product",
-        price: 10,
-        quantity: 3
-      }
-    ])
+    // const products = ref([
+    //   {
+    //     id: 1,
+    //     name: "Prop Product",
+    //     price: 10,
+    //     quantity: 3
+    //   }
+    // ])
 
     //emits
-    const handleRemove = (data) => products.value.splice(0, 1)
+    //const handleRemove = (data) => products.value.splice(0, 1)
 
     return {
       message,
@@ -89,7 +101,8 @@ export default {
       name, price,
       total,
       products,
-      handleRemove
+      //handleRemove
+      removeProduct
     }
   }
 }
@@ -111,7 +124,9 @@ export default {
   <br /><br />
   <hr />
   <br /><br />
-  <CartProduct v-for="product in products" :cart-product="product" :key="product.id" @remove="handleRemove"></CartProduct>
+  <CartProduct v-for="product in products" :cart-product="product" :key="product.id" 
+    @remove="removeProduct">
+  </CartProduct>
 
 </template>
 
